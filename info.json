@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "title": "Radar Channels",
   "author": "sakuro",
-  "description": "Radar Channels",
+  "description": "Lists universe-mode radars grouped by channel. Hover over a radar to preview its surroundings; click to switch to remote view.",
   "factorio_version": "2.1",
   "dependencies": [
-    "base >= 2.1"
+    "base >= 2.1",
+    "flib >= 0.16"
   ]
 }
