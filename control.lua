@@ -1,0 +1,3 @@
+-- Replace the following code with your implementation. If this file is not needed, delete it entirely.
+-- script.on_init(function()
+-- end)

@@ -1,0 +1,12 @@
+-- Replace the following code with your implementation. If this file is not needed, delete it entirely.
+-- data:extend({
+--   {
+--       type = "bool-setting",
+--       name = "foobar",
+--       setting_type = "startup",
+--       default_value = true,
+--       order = "xxx",
+--       localised_name = {"mod-settings-name.foobar"},
+--       localised_description = {"mod-settings-description.foobar"}
+--   }
+-- })
