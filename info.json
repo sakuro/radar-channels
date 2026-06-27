@@ -1,6 +1,6 @@
 {
   "name": "radar-channels",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "title": "Radar Channels",
   "author": "sakuro",
   "description": "Lists universe-mode radars grouped by channel. Hover over a radar to preview its surroundings; click to switch to remote view.",
