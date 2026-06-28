@@ -217,6 +217,15 @@ local function build_gui(player)
     window.auto_center = true
 
     local scroll = elems.main_scroll
+    if #channels == 0 then
+        local label = scroll.add{type = "label", caption = {"gui.radar-channels-no-radars"}}
+        label.style.top_padding = 8
+        label.style.bottom_padding = 8
+        label.style.left_padding = 8
+        label.style.right_padding = 8
+        return
+    end
+
     if #channels > MAX_VISIBLE_ROWS then
         scroll.style.maximal_height = MAX_VISIBLE_ROWS * ROW_HEIGHT
     end
