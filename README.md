@@ -1,5 +1,7 @@
 # Radar Channels
 
+[![Downloads](https://img.shields.io/badge/dynamic/json.svg?label=Downloads&url=https%3A%2F%2Fmods.factorio.com%2Fapi%2Fmods%2Fradar-channels&query=%24.downloads_count)](https://mods.factorio.com/mod/radar-channels)
+
 A Factorio MOD that lists universe-mode radars grouped by channel.
 
 ## Features
