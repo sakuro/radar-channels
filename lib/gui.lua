@@ -1,5 +1,7 @@
 local flib_gui = require("__flib__.gui")
 local radar_channels = require("lib.radar_channels")
+local Channels = require("lib.channels")
+local Appearance = require("lib.appearance")
 
 local M = {}
 
@@ -45,28 +47,6 @@ flib_gui.add_handlers({
     on_radar_leave   = on_radar_leave,
 })
 
-local function signal_sprite(signal)
-    if signal.type == "virtual" then
-        return "virtual-signal/" .. signal.name
-    end
-    return signal.type .. "/" .. signal.name
-end
-
-local function quality_color(quality_name)
-    local proto = prototypes.quality and prototypes.quality[quality_name]
-    return (proto and proto.color) or {r = 1, g = 1, b = 1}
-end
-
-local function planet_sprite(surface)
-    local ok, planet = pcall(function() return surface.planet end)
-    if not ok or not planet then return nil end
-    local ok2, name = pcall(function() return planet.prototype.name end)
-    if not ok2 or not name then return nil end
-    local path = "space-location/" .. name
-    local ok3, valid = pcall(helpers.is_valid_sprite_path, path)
-    return (ok3 and valid) and path or nil
-end
-
 destroy_camera = function(player)
     local cam = player.gui.screen[CAMERA_NAME]
     if cam then cam.destroy() end
@@ -74,7 +54,7 @@ end
 
 show_camera = function(player, tags)
     destroy_camera(player)
-    local color = quality_color(tags.quality_name)
+    local color = Appearance.quality_color(tags.quality_name)
 
     local _, cam_frame = flib_gui.add(player.gui.screen, {
         type = "frame",
@@ -135,7 +115,7 @@ local function add_radar_cell(parent, entities)
     local _, flow = flib_gui.add(scroll, {type = "flow", direction = "horizontal"})
 
     for _, entity in ipairs(entities) do
-        local sprite_path = planet_sprite(entity.surface)
+        local sprite_path = Appearance.planet_sprite(entity.surface)
         local cell_def = {
             type = "flow",
             direction = "vertical",
@@ -250,7 +230,7 @@ local function build_gui(player)
         local sig_btn = sig_cell.add{
             type = "sprite-button",
             style = "slot_button",
-            sprite = signal_sprite(entry.signal),
+            sprite = Channels.sprite(entry.signal),
         }
         if entry.signal.quality ~= "normal" then
             sig_btn.quality = entry.signal.quality
