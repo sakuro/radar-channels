@@ -108,7 +108,9 @@ end
 
 --- Wire to defines.events.on_gui_closed.
 function M.on_closed(e)
-    if e.element.name == WINDOW_NAME then
+    -- e.element is nil when a non-custom-GUI window closes (inventory,
+    -- equipment grid, etc.) -- distinguished only by e.gui_type there.
+    if e.element and e.element.name == WINDOW_NAME then
         on_window_closed(e)
     end
 end
