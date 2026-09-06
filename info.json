@@ -1,6 +1,6 @@
 {
   "name": "radar-channels",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "title": "Radar Channels",
   "author": "sakuro",
   "description": "Lists universe-mode radars grouped by channel",

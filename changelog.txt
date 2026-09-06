@@ -1,5 +1,6 @@
 ---------------------------------------------------------------------------------------------------
-Version: Unreleased
+Version: 0.7.0
+Date: 2026-09-06
   Bugfixes:
     - Fix the planet icon on radar entries displaying oversized
   Changes:
