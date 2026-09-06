@@ -146,8 +146,12 @@ local function add_radar_cell(parent, entities)
             cell_def[#cell_def + 1] = {
                 type = "sprite",
                 sprite = sprite_path,
+                -- resize_to_sprite defaults to true, which makes the widget
+                -- snap to the icon's native size and ignore style.size below.
+                elem_mods = {resize_to_sprite = false},
                 style_mods = {
                     size = PLANET_ICON_SIZE,
+                    stretch_image_to_widget_size = true,
                     top_margin = -SLOT_SIZE,
                     bottom_margin = -PLANET_ICON_SIZE,
                     left_margin = 2,
