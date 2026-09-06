@@ -1,4 +1,3 @@
-local flib_gui = require("__flib__.gui")
 local radar_channels = require("lib.radar_channels")
 local Channels = require("lib.channels")
 local Appearance = require("lib.appearance")
@@ -7,6 +6,8 @@ local M = {}
 
 local WINDOW_NAME = "radar-channels-window"
 local CAMERA_NAME = "radar-channels-camera"
+local CLOSE_BUTTON_NAME = "radar-channels-close"
+local RADAR_SLOT_NAME = "radar-channels-radar-slot"
 local CAMERA_WIDTH = 480
 local CAMERA_HEIGHT = 270
 local CAMERA_ZOOM = 0.5
@@ -18,6 +19,49 @@ local MAIN_WIDTH = RADAR_COLS * SLOT_SIZE + 160
 local PLANET_ICON_SIZE = 16
 
 local destroy_camera, show_camera, close_gui, open_remote_view
+
+--- Recursively builds a LuaGuiElement tree from `def` (a LuaGuiElement.add_param
+--- plus optional style_mods/elem_mods and array-part children), mirroring
+--- flib.gui.add's (elems, element) contract: elems collects every named
+--- descendant so callers can look them up without walking the tree by hand.
+local function gui_add(parent, def)
+    local style_mods = def.style_mods
+    local elem_mods = def.elem_mods
+    def.style_mods = nil
+    def.elem_mods = nil
+
+    local children = {}
+    for i, child in ipairs(def) do
+        children[i] = child
+        def[i] = nil
+    end
+
+    local element = parent.add(def)
+
+    if style_mods then
+        for key, value in pairs(style_mods) do
+            element.style[key] = value
+        end
+    end
+    if elem_mods then
+        for key, value in pairs(elem_mods) do
+            element[key] = value
+        end
+    end
+
+    local elems = {}
+    if element.name and element.name ~= "" then
+        elems[element.name] = element
+    end
+    for _, child in ipairs(children) do
+        local child_elems = gui_add(element, child)
+        for name, child_element in pairs(child_elems) do
+            elems[name] = child_element
+        end
+    end
+
+    return elems, element
+end
 
 local function on_close_click(e)
     close_gui(game.get_player(e.player_index))
@@ -39,13 +83,35 @@ local function on_radar_leave(e)
     destroy_camera(game.get_player(e.player_index))
 end
 
-flib_gui.add_handlers({
-    on_close_click   = on_close_click,
-    on_window_closed = on_window_closed,
-    on_radar_click   = on_radar_click,
-    on_radar_hover   = on_radar_hover,
-    on_radar_leave   = on_radar_leave,
-})
+--- Wire to defines.events.on_gui_click.
+function M.on_click(e)
+    if e.element.name == CLOSE_BUTTON_NAME then
+        on_close_click(e)
+    elseif e.element.name == RADAR_SLOT_NAME then
+        on_radar_click(e)
+    end
+end
+
+--- Wire to defines.events.on_gui_hover.
+function M.on_hover(e)
+    if e.element.name == RADAR_SLOT_NAME then
+        on_radar_hover(e)
+    end
+end
+
+--- Wire to defines.events.on_gui_leave.
+function M.on_leave(e)
+    if e.element.name == RADAR_SLOT_NAME then
+        on_radar_leave(e)
+    end
+end
+
+--- Wire to defines.events.on_gui_closed.
+function M.on_closed(e)
+    if e.element.name == WINDOW_NAME then
+        on_window_closed(e)
+    end
+end
 
 destroy_camera = function(player)
     local cam = player.gui.screen[CAMERA_NAME]
@@ -56,7 +122,7 @@ show_camera = function(player, tags)
     destroy_camera(player)
     local color = Appearance.quality_color(tags.quality_name)
 
-    local _, cam_frame = flib_gui.add(player.gui.screen, {
+    local _, cam_frame = gui_add(player.gui.screen, {
         type = "frame",
         name = CAMERA_NAME,
         direction = "vertical",
@@ -71,7 +137,7 @@ show_camera = function(player, tags)
         cam_frame.auto_center = true
     end
 
-    local _, titlebar = flib_gui.add(cam_frame, {
+    local _, titlebar = gui_add(cam_frame, {
         type = "flow",
         direction = "horizontal",
         style_mods = {vertical_align = "center"},
@@ -95,7 +161,7 @@ show_camera = function(player, tags)
         backer.style.font_color = color
     end
 
-    flib_gui.add(cam_frame, {
+    gui_add(cam_frame, {
         type = "camera",
         position = {x = tags.x, y = tags.y},
         surface_index = tags.surface_index,
@@ -105,14 +171,14 @@ show_camera = function(player, tags)
 end
 
 local function add_radar_cell(parent, entities)
-    local _, scroll = flib_gui.add(parent, {
+    local _, scroll = gui_add(parent, {
         type = "scroll-pane",
         direction = "horizontal",
         style = "radar_channels_radar_scroll",
         style_mods = {width = RADAR_COLS * SLOT_SIZE},
     })
 
-    local _, flow = flib_gui.add(scroll, {type = "flow", direction = "horizontal"})
+    local _, flow = gui_add(scroll, {type = "flow", direction = "horizontal"})
 
     for _, entity in ipairs(entities) do
         local sprite_path = Appearance.planet_sprite(entity.surface)
@@ -122,6 +188,7 @@ local function add_radar_cell(parent, entities)
             style_mods = {vertical_spacing = 0, size = SLOT_SIZE},
             {
                 type = "sprite-button",
+                name = RADAR_SLOT_NAME,
                 style = "slot_button",
                 sprite = "entity/radar",
                 quality = entity.quality.name,
@@ -135,11 +202,6 @@ local function add_radar_cell(parent, entities)
                     quality_name = entity.quality.name,
                 },
                 elem_mods = {raise_hover_events = true},
-                handler = {
-                    [defines.events.on_gui_click] = on_radar_click,
-                    [defines.events.on_gui_hover] = on_radar_hover,
-                    [defines.events.on_gui_leave] = on_radar_leave,
-                },
             },
         }
         if sprite_path then
@@ -158,19 +220,18 @@ local function add_radar_cell(parent, entities)
                 },
             }
         end
-        flib_gui.add(flow, cell_def)
+        gui_add(flow, cell_def)
     end
 end
 
 local function build_gui(player)
     local channels = radar_channels.get(player.force)
 
-    local elems, window = flib_gui.add(player.gui.screen, {
+    local elems, window = gui_add(player.gui.screen, {
         type = "frame",
         name = WINDOW_NAME,
         direction = "vertical",
         style_mods = {minimal_width = MAIN_WIDTH},
-        handler = {[defines.events.on_gui_closed] = on_window_closed},
         {
             type = "flow",
             direction = "horizontal",
@@ -179,11 +240,11 @@ local function build_gui(player)
             {type = "empty-widget", style = "draggable_space_header", drag_target = WINDOW_NAME, style_mods = {horizontally_stretchable = true, right_margin = 4}},
             {
                 type = "sprite-button",
+                name = CLOSE_BUTTON_NAME,
                 style = "frame_action_button",
                 sprite = "utility/close",
                 hovered_sprite = "utility/close_black",
                 clicked_sprite = "utility/close_black",
-                handler = on_close_click,
             },
         },
         {

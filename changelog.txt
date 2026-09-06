@@ -2,6 +2,8 @@
 Version: Unreleased
   Bugfixes:
     - Fix the planet icon on radar entries displaying oversized
+  Changes:
+    - Remove the flib dependency
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.0
 Date: 2026-06-28

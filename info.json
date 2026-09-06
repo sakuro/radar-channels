@@ -6,7 +6,6 @@
   "description": "Lists universe-mode radars grouped by channel",
   "factorio_version": "2.1",
   "dependencies": [
-    "base >= 2.1",
-    "flib >= 0.16"
+    "base >= 2.1"
   ]
 }
