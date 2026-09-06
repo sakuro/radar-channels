@@ -1,11 +1,28 @@
 [tools]
-ruby = "4.0"
-gh = "latest"
+gh = "2.99.0"
+gitleaks = "8.30"
+jq = "1.8.2"
+hk = "1.57.0"
 actionlint = "latest"
 shellcheck = "latest"
+"github:sakuro/factorix" = "0.23.0"
+
+[hooks]
+# hk install: skipped in CI (GitHub Actions sets CI); hk falls back to script shims on Git < 2.54.
+postinstall = [
+  'test -n "$CI" || hk install',
+]
 
 [settings]
 minimum_release_age = "3d"
 
+[task_config]
+includes = ["tasks"]
+
 [env]
-_.path = ["bin"]
+# Make `hk install` generate hooks that run via `mise x`, so mise-managed tools
+# (gitleaks, hk) resolve without mise shell activation — e.g. from GUI git clients.
+HK_MISE = "1"
+MOD_LICENSE = "default_mit"
+MOD_CATEGORY = "utilities"
+MOD_TAGS = "circuit-network"
