@@ -31,7 +31,7 @@ jobs:
         echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
     - name: Checkout release tag
-      uses: actions/checkout@v5
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         ref: ${{ steps.version.outputs.tag }}
         fetch-depth: 0
@@ -47,44 +47,21 @@ jobs:
         fi
         echo "✅ Version consistency verified: $FILE_VERSION"
 
-    - name: Set git user
-      uses: git-actions/set-user@v1
-
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        bundler-cache: true
+    - name: Setup mise
+      uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
 
     - name: Build and upload MOD to Factorio MOD portal
       env:
         FACTORIO_API_KEY: ${{ secrets.FACTORIO_API_KEY }}
-      run: bundle exec rake release:portal
+      run: mise run release:portal
 
     - name: Create GitHub Release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: bundle exec rake release:github
-
-    - name: Checkout main branch
-      run: git checkout main
-
-    - name: Add Unreleased section to changelog.txt
-      run: |
-        { printf -- '-%.0s' {1..99}; printf '\nVersion: Unreleased\n'; cat changelog.txt; } > changelog.txt.tmp
-        mv changelog.txt.tmp changelog.txt
-
-    - name: Verify changelog.txt format
-      run: bundle exec factorix mod changelog check
-
-    - name: Commit and push changelog update
-      run: |
-        git add changelog.txt
-        git commit -m ":memo: Start Unreleased section for next release"
-        git push origin main
+      run: mise run release:github
 
     - name: Post-release summary
       run: |
         echo "🎉 Release ${{ steps.version.outputs.tag }} published successfully!"
         echo "- MOD built from tagged commit and published to Factorio MOD portal"
         echo "- GitHub release created with changelog and assets"
-        echo "- Unreleased section added to changelog.txt on main"
