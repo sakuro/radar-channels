@@ -29,6 +29,8 @@ Root-level Lua files are limited to the Factorio stage entry points (`settings.l
 
 Prefer pure logic in `lib/` as functions over plain values so a spec can `require` it directly (e.g. `require("lib.foo")`). Where a `lib/` module touches a narrow slice of the Factorio runtime (e.g. `game.surfaces`, `prototypes`), specs may stub just that slice rather than skipping coverage. GUI-tree construction (`player.gui.screen`, `flib`) is out of scope — verify it manually in-game.
 
+`spec/helper.lua` runs once before any spec loads — the place for setup that must precede the first `require` of the code under test (e.g. Factorio global stubs). Keep it idempotent.
+
 ## Release
 
 Releases are handled by GitHub Actions workflows. Do not run `mise run release:*` tasks manually.
@@ -49,7 +51,8 @@ Do not create a section for the next release version directly — version bumpin
 # Document Map
 
 - README.md: Project overview
-- CONTRIBUTING.md: Pull request guidelines
+- CONTRIBUTING.md: Development setup and pull request guidelines
+- .scaffold-sync.json / .scaffold-sync.paths: scaffold-drift sync state and tracked-path list; do not delete (see CONTRIBUTING.md "Scaffold drift")
 
 # External References
 
