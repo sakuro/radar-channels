@@ -1,12 +1,14 @@
 local gui = require("lib.gui")
 
 script.on_event(defines.events.on_lua_shortcut, function(event)
-    if event.prototype_name ~= "radar-channels" then return end
-    gui.toggle(game.get_player(event.player_index))
+  if event.prototype_name ~= "radar-channels" then
+    return
+  end
+  gui.toggle(game.get_player(event.player_index))
 end)
 
 script.on_event("radar-channels-toggle", function(event)
-    gui.toggle(game.get_player(event.player_index))
+  gui.toggle(game.get_player(event.player_index))
 end)
 
 script.on_event(defines.events.on_gui_click, gui.on_click)
