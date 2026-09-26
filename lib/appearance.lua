@@ -1,14 +1,17 @@
 local Appearance = {}
 
---- The color associated with a quality prototype, or white when the
---- prototype doesn't exist (e.g. a quality mod was removed).
+--- Returns the color of a quality prototype, or white when the prototype
+--- doesn't exist (e.g. a quality mod was removed).
+---@param quality_name string
+---@return Color
 function Appearance.quality_color(quality_name)
   local proto = prototypes.quality and prototypes.quality[quality_name]
   return (proto and proto.color) or { r = 1, g = 1, b = 1 }
 end
 
---- The space-location sprite path for `surface`'s planet, or nil when the
---- surface has no planet, or its sprite isn't a valid path.
+--- Returns the space-location sprite path for the surface's planet.
+---@param surface LuaSurface
+---@return string|nil  nil when the surface has no planet or its sprite isn't a valid path
 function Appearance.planet_sprite(surface)
   local ok, planet = pcall(function()
     return surface.planet
