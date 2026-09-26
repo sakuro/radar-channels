@@ -83,7 +83,8 @@ local function on_radar_leave(e)
   destroy_camera(game.get_player(e.player_index))
 end
 
---- Wire to defines.events.on_gui_click.
+--- Handles clicks on this MOD's GUI; wire to defines.events.on_gui_click.
+---@param e EventData.on_gui_click
 function M.on_click(e)
   if e.element.name == CLOSE_BUTTON_NAME then
     on_close_click(e)
@@ -92,21 +93,24 @@ function M.on_click(e)
   end
 end
 
---- Wire to defines.events.on_gui_hover.
+--- Handles hovering over a radar slot; wire to defines.events.on_gui_hover.
+---@param e EventData.on_gui_hover
 function M.on_hover(e)
   if e.element.name == RADAR_SLOT_NAME then
     on_radar_hover(e)
   end
 end
 
---- Wire to defines.events.on_gui_leave.
+--- Handles leaving a radar slot; wire to defines.events.on_gui_leave.
+---@param e EventData.on_gui_leave
 function M.on_leave(e)
   if e.element.name == RADAR_SLOT_NAME then
     on_radar_leave(e)
   end
 end
 
---- Wire to defines.events.on_gui_closed.
+--- Handles closing this MOD's window; wire to defines.events.on_gui_closed.
+---@param e EventData.on_gui_closed
 function M.on_closed(e)
   -- e.element is nil when a non-custom-GUI window closes (inventory,
   -- equipment grid, etc.) -- distinguished only by e.gui_type there.
@@ -344,6 +348,8 @@ local function open_gui(player)
   player.opened = player.gui.screen[WINDOW_NAME]
 end
 
+--- Opens the channel window for the player, or closes it when already open.
+---@param player LuaPlayer
 local function toggle_gui(player)
   if player.gui.screen[WINDOW_NAME] then
     close_gui(player)

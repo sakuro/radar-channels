@@ -36,6 +36,9 @@ local function collect(force)
   return records
 end
 
+--- Returns the force's powered radars in universe mode, grouped by channel signal.
+---@param force LuaForce
+---@return table[]  entries {signal, entities}, as `Channels.group` returns
 function M.get(force)
   return Channels.group(collect(force))
 end

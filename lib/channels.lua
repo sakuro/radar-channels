@@ -1,6 +1,8 @@
 local Channels = {}
 
---- Sprite path for a signal, e.g. "item/iron-plate" or "virtual-signal/signal-A".
+--- Returns the sprite path for a signal, e.g. "item/iron-plate" or "virtual-signal/signal-A".
+---@param signal SignalID
+---@return string
 function Channels.sprite(signal)
   if signal.type == "virtual" then
     return "virtual-signal/" .. signal.name
@@ -16,10 +18,12 @@ local function sort_key(signal)
   return signal.type .. signal.name .. signal.quality
 end
 
---- Groups `records` (each {signal = {type, name, quality}, entity = <opaque>})
---- by signal identity, returning entries {signal, entities} sorted by signal
---- type, then name, then quality. `entity` is passed through untouched, so
---- callers may pass live entities or plain stand-ins.
+--- Groups records by signal identity, sorted by signal type, then name, then quality.
+---
+--- `entity` is passed through untouched, so callers may pass live entities or
+--- plain stand-ins.
+---@param records table[]  each {signal = {type, name, quality}, entity = <opaque>}
+---@return table[]  entries {signal, entities}
 function Channels.group(records)
   local by_key = {}
   local result = {}
