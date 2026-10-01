@@ -113,7 +113,7 @@ end
 ---@param e EventData.on_gui_closed
 function M.on_closed(e)
   -- e.element is nil when a non-custom-GUI window closes (inventory,
-  -- equipment grid, etc.) -- distinguished only by e.gui_type there.
+  -- equipment grid, etc.); only e.gui_type tells those apart.
   if e.element and e.element.name == WINDOW_NAME then
     on_window_closed(e)
   end
