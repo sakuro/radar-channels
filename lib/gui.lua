@@ -140,7 +140,10 @@ show_camera = function(player, tags)
   local main = player.gui.screen[WINDOW_NAME]
   if main then
     local loc = main.location
-    cam_frame.location = { x = loc.x + MAIN_WIDTH + 8, y = loc.y }
+    -- MAIN_WIDTH and the gap are in style units, which the engine renders
+    -- scaled by display_scale; location is in unscaled screen pixels.
+    local offset = math.floor((MAIN_WIDTH + 8) * player.display_scale + 0.5)
+    cam_frame.location = { x = loc.x + offset, y = loc.y }
   else
     cam_frame.auto_center = true
   end
