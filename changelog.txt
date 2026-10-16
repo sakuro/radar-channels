@@ -3,6 +3,7 @@ Version: 0.7.2
 Date: 2026-10-16
   Changes:
     - Update the Japanese locale to use the new "全域モード" term for universe mode
+    - Require base 2.1.22 or later so that the translations stay consistent
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.1
 Date: 2026-10-02
