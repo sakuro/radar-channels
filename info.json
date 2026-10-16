@@ -1,11 +1,11 @@
 {
   "name": "radar-channels",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "title": "Radar Channels",
   "author": "sakuro",
   "description": "Lists universe-mode radars grouped by channel",
   "factorio_version": "2.1",
   "dependencies": [
-    "base >= 2.1"
+    "base >= 2.1.22"
   ]
 }
